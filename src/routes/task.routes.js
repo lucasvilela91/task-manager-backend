@@ -14,15 +14,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    try {
-        const newTask = new taskModel(req.body);
-
-        await newTask.save();
-
-        res.status(201).send(newTask);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    return new taskController(req, res).create();
 });
 
 router.patch("/:id", async (req, res) => {
