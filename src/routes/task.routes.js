@@ -22,21 +22,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-    try {
-        const taskId = req.params.id;
-
-        const taskToDelete = await taskModel.findById(taskId);
-
-        if (!taskToDelete) {
-            return res.status(404).send("Essa tarefa não foi encontrada.");
-        }
-
-        const deletedTask = await taskModel.findByIdAndDelete(taskId);
-
-        res.status(200).send(deletedTask);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    return new taskController(req, res).delete();
 });
 
 module.exports = router;
