@@ -52,6 +52,32 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+app.patch("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const taskData = req.body;
+
+        const taskToUpdate = await taskModel.findById(taskId);
+
+        const allowedUpdate = ["isCompleted"];
+        const requestUpdates = Object.keys(taskData);
+
+        for (let update of requestUpdates) {
+            if (allowedUpdate.includes(update)) {
+                taskToUpdate[update] = taskData[update];
+            } else {
+                return res
+                    .status(500)
+                    .send("Um ou mais campos inseridos não são editáveis.");
+            }
+        }
+        await taskToUpdate.save();
+        return res.status(200).send(taskToUpdate);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+});
+
 app.delete("/tasks/:id", async (req, res) => {
     try {
         const taskId = req.params.id;
