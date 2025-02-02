@@ -6,12 +6,29 @@ const taskModel = require("./src/models/task.model");
 
 dotenv.config();
 const app = express();
+app.use(express.json());
 
 connectDB();
 
 app.get("/tasks", async (req, res) => {
-    const tasks = await taskModel.find({});
-    res.status(200).send(tasks);
+    try {
+        const tasks = await taskModel.find({});
+        res.status(200).send(tasks);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+app.post("/tasks", async (req, res) => {
+    try {
+        const newTask = new taskModel(req.body);
+
+        await newTask.save();
+
+        res.status(201).send(newTask);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
 app.listen(3000, () => console.log("Listening on port 3000"));
